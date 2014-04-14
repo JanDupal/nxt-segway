@@ -10,5 +10,8 @@ $(OUTPUT).rxe: *.nxc Makefile
 down: $(OUTPUT).rxe
 	$(NXC) -d $(OUTPUT).nxc
 
+run: $(OUTPUT).rxe
+	$(NXC) -r $(OUTPUT).nxc
+
 clean:
 	/bin/rm -v $(OUTPUT).rxe
