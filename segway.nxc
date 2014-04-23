@@ -1,18 +1,46 @@
-task main(){
-    SetSensorUltrasonic(IN_1);
-    while(true){
-        //the ultrasonic sensor needs time to read the values
-        //that is why we have the 500 millisecond wait
-        Wait(500);
-        ClearScreen();
-        NumOut(0, 0, SensorUS(IN_1));
+/* vim: set filetype=c:ai:et:sw=4:ts=4:sts=4: */
 
-        if(SensorUS(IN_1) < 50){
-            Off(OUT_AC);
-        }
-        else {
-            OnFwd(OUT_AC, 60);
-        }
+#include "segway.h"
+
+#define SETSAMPLES 20
+
+/** global variable with setpoint for controlled process */
+unsigned int setpoint = 0;
+
+task main() {
+    SetSensorLight(IN_3);
+    setpoint = get_setpoint();
+}
+
+
+/** Initialize setpoint value.
+ *  Function executed right after start of the program. User should hold the
+ *  Legoway in balance. After three short beeps Legoway should be able to
+ *  stand by itself.
+ *
+ * @return setpoint value
+ */
+unsigned int get_setpoint() {
+    unsigned int retval = 0;
+    float vals = 0;
+
+    ClearScreen();
+    TextOut(0, LCD_LINE1, "Getting setpoint.");
+    TextOut(0, LCD_LINE2, "Wait until beep.");
+
+    for (int i=0; i<SETSAMPLES; i++) {
+        vals += SENSOR_3;
+        Wait(500);
     }
+    vals /= 20;
+    retval = vals;
+
+    ClearScreen();
+    TextOut(0, LCD_LINE1, "setpoint:");
+    NumOut(0, LCD_LINE2, retval);
+    Wait(3000);
+    ClearScreen();
+
+    return retval;
 }
 
