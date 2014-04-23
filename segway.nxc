@@ -2,6 +2,7 @@
 
 #include "segway.h"
 
+#define VOL 3
 #define SETSAMPLES 20
 
 /** global variable with setpoint for controlled process */
@@ -10,6 +11,8 @@ unsigned int setpoint = 0;
 task main() {
     SetSensorLight(IN_3);
     setpoint = get_setpoint();
+
+    Wait(5000);
 }
 
 
@@ -25,8 +28,8 @@ unsigned int get_setpoint() {
     float vals = 0;
 
     ClearScreen();
-    TextOut(0, LCD_LINE1, "Getting setpoint.");
-    TextOut(0, LCD_LINE2, "Wait until beep.");
+    TextOut(0, LCD_LINE3, "Calibrating...");
+    TextOut(0, LCD_LINE4, "Wait until beep...");
 
     for (int i=0; i<SETSAMPLES; i++) {
         vals += SENSOR_3;
@@ -35,11 +38,13 @@ unsigned int get_setpoint() {
     vals /= 20;
     retval = vals;
 
+    repeat (3){
+        PlayToneEx(TONE_C7, 100, VOL, FALSE);  Wait(200);
+    }
+
     ClearScreen();
-    TextOut(0, LCD_LINE1, "setpoint:");
-    NumOut(0, LCD_LINE2, retval);
-    Wait(3000);
-    ClearScreen();
+    TextOut(0, LCD_LINE3, "setpoint:");
+    NumOut(0, LCD_LINE4, retval);
 
     return retval;
 }
