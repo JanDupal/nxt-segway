@@ -5,7 +5,7 @@
 #define VOL 3
 #define SETSAMPLES 20
 
-/** global variable with setpoint for controlled process */
+/** global variable holding setpoint value for controlled process */
 unsigned int setpoint = 0;
 
 task main() {
@@ -19,7 +19,7 @@ task main() {
 /** Initialize setpoint value.
  *  Function executed right after start of the program. User should hold the
  *  Legoway in balance. After three short beeps Legoway should be able to
- *  stand by itself.
+ *  balance by itself.
  *
  * @return setpoint value
  */
