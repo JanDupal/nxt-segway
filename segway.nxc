@@ -5,6 +5,12 @@
 #define VOL 3
 #define SETSAMPLES 20
 
+//PID param init
+#define KP 10
+#define KI 1
+#define KD 0.01
+#define TS 0.001
+
 /** global variable holding setpoint value for controlled process */
 unsigned int setpoint = 0;
 
@@ -15,7 +21,6 @@ task main() {
     Wait(5000);
 }
 
-
 /** Initialize setpoint value.
  *  Function executed right after start of the program. User should hold the
  *  Legoway in balance. After three short beeps Legoway should be able to
@@ -25,14 +30,17 @@ task main() {
  */
 unsigned int get_setpoint() {
     unsigned int retval = 0;
+    unsigned int tmp = 0;
     float vals = 0;
 
     ClearScreen();
-    TextOut(0, LCD_LINE3, "Calibrating...");
-    TextOut(0, LCD_LINE4, "Wait until beep...");
+    TextOut(0, LCD_LINE2, "Calibrating...");
+    TextOut(0, LCD_LINE3, "Wait until beep...");
 
     for (int i=0; i<SETSAMPLES; i++) {
-        vals += SENSOR_3;
+        tmp = SENSOR_3
+        vals += tmp;
+        NumOut(40, LCD_LINE4, tmp);
         Wait(500);
     }
     vals /= 20;
@@ -47,5 +55,19 @@ unsigned int get_setpoint() {
     NumOut(0, LCD_LINE4, retval);
 
     return retval;
+}
+
+float pid(float &y1, float &y2, float &e2, float &I2) {
+
+    float e1, u, P, I1, D;
+
+    e1 = setpoint - y1;
+    P = KP * e2;
+    I1 = (KI * e1 * TS) + I2;
+    D = (KD / TS) * (e1 - e2);
+
+    u = P + I1 + D;
+
+    return u;
 }
 
