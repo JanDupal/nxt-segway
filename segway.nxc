@@ -6,19 +6,40 @@
 #define SETSAMPLES 20
 
 //PID param init
-#define KP 10
-#define KI 1
-#define KD 0.01
-#define TS 0.001
+#define KP 6
+#define KI 0
+#define KD 0
+#define TS 0.005
 
 /** global variable holding setpoint value for controlled process */
 unsigned int setpoint = 0;
+
+task controller() {
+    float y1 = 0, y2 = 0, e2 = 0, I2 = 0;
+    long t0;
+    float out;
+
+    ClearScreen();
+
+    while (true) {
+        y1 = SENSOR_3;
+        out = pid(y1, y2, e2, I2);
+        NumOut(40, LCD_LINE1, out);
+        NumOut(40, LCD_LINE2, out * 5);
+
+        OnRev(OUT_BC, out * 5);
+
+        Wait(TS * 1000);
+    }
+}
+
 
 task main() {
     SetSensorLight(IN_3);
     setpoint = get_setpoint();
 
-    Wait(5000);
+    Precedes(controller);
+
 }
 
 /** Initialize setpoint value.
@@ -41,7 +62,7 @@ unsigned int get_setpoint() {
         tmp = SENSOR_3
         vals += tmp;
         NumOut(40, LCD_LINE4, tmp);
-        Wait(500);
+        Wait(250);
     }
     vals /= 20;
     retval = vals;
@@ -57,6 +78,17 @@ unsigned int get_setpoint() {
     return retval;
 }
 
+
+/** PID controller
+ *  Actually this is PSD controller (Sum instead of Integral).
+ *
+ * @param y1 light sensor value
+ * @param y2 previous value of light sensor
+ * @param e2 value of error from previous run
+ * @param I2 previous value of integral gain
+ *
+ * @return controller output
+ */
 float pid(float &y1, float &y2, float &e2, float &I2) {
 
     float e1, u, P, I1, D;
@@ -67,6 +99,10 @@ float pid(float &y1, float &y2, float &e2, float &I2) {
     D = (KD / TS) * (e1 - e2);
 
     u = P + I1 + D;
+
+    y2 = y1;
+    e2 = e1;
+    I2 = I1;
 
     return u;
 }
