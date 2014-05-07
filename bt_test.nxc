@@ -1,0 +1,45 @@
+#define MASTER 0
+#define FORWARD_MOTION_MAILBOX 1
+
+#define BT_PERIOD_MS 50
+
+string last_payload = "";
+int n = 0;
+int forward_velocity = 0;
+
+bool bt_running = false;
+int bt_collision = 0;
+
+task btController() {
+  bt_running = true;
+  string payload;
+  if(ReceiveRemoteString(FORWARD_MOTION_MAILBOX, true, payload) == NO_ERR) {
+    n++;
+    forward_velocity = atoi(payload);
+    last_payload = payload;
+  }
+  bt_running = false;
+}
+
+task btScheduler() {
+  while(true) {
+    if(bt_running) bt_collision++;
+    StartTask(btController);
+    Wait(BT_PERIOD_MS);
+  }
+}
+
+task main() {
+  StartTask(btScheduler);
+  TextOut(0, LCD_LINE1, "Running");
+
+  while(true) {
+    ClearLine(LCD_LINE2);
+    TextOut(0, LCD_LINE2, "#" + NumToStr(n) + "(" + NumToStr(bt_collision) + ")" + ": " + last_payload);
+
+    ClearLine(LCD_LINE4);
+    TextOut(0, LCD_LINE4, "V: " + NumToStr(forward_velocity));
+
+    Wait(1000);
+  }
+}
