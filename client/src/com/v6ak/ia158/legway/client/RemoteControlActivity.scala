@@ -41,13 +41,16 @@ class RemoteControlActivity extends SActivity{
             dialog.hide()
             contentView = new SVerticalLayout {
               val sb = SSeekBar()
+              sb.minimumHeight = 50.dip
               val min = -100
               val max = 100
               sb.max = max-min
               sb.onProgressChanged { (b: SeekBar, num: Int, fromUser: Boolean) =>
                 session.setSpeed(min+num)
               }
-              SButton("Stop", {sb.progress = 0-min})
+              def stop(){sb.progress = 0-min}
+              stop()
+              SButton("Stop", {stop()})
               SButton("Disconnect", {finish()})
             }
           }

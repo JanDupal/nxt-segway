@@ -136,7 +136,7 @@ class ConnectionService extends LocalService {
         sendCommand(WriteMessage.string(1, s"hello"))
         val startTime = System.currentTimeMillis() + 150 // TODO: wait for reply
         while(true){
-          val validUntil = startTime - System.currentTimeMillis() + 2000
+          val validUntil = System.currentTimeMillis() - startTime + 2000
           sendCommand(WriteMessage.string(1, s"$currentSpeed $validUntil"))
           try{
             Thread.sleep(1000)
