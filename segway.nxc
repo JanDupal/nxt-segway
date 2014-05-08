@@ -1,6 +1,7 @@
 /* vim: set filetype=c:ai:et:sw=4:ts=4:sts=4: */
 
 #include "segway.h"
+#include "bluetooth.h"
 
 #define VOL 3
 #define SETSAMPLES 20
@@ -14,32 +15,40 @@
 /** global variable holding setpoint value for controlled process */
 unsigned int setpoint = 0;
 
+float y1 = 0, y2 = 0, e2 = 0, I2 = 0;
+long t0;
+float out;
+
 task controller() {
-    float y1 = 0, y2 = 0, e2 = 0, I2 = 0;
-    long t0;
-    float out;
+    y1 = SENSOR_3;
+    out = pid(y1, y2, e2, I2);
+    //NumOut(40, LCD_LINE1, out);
+    //NumOut(40, LCD_LINE2, out * 5);
 
-    ClearScreen();
-
-    while (true) {
-        y1 = SENSOR_3;
-        out = pid(y1, y2, e2, I2);
-        NumOut(40, LCD_LINE1, out);
-        NumOut(40, LCD_LINE2, out * 5);
-
-        OnRev(OUT_BC, out * 5);
-
-        Wait(TS * 1000);
-    }
+    OnRev(OUT_BC, out * 5);
 }
-
 
 task main() {
     SetSensorLight(IN_3);
     setpoint = get_setpoint();
 
-    Precedes(controller);
+    int i = 0;
 
+    while(true) {
+      //StartTask(controller);
+
+      if(i == 0)
+        StartTask(btDebug);
+      /*
+      else if(i == 2 || i == 6)
+        StartTask(btController);
+      else
+        StartTask(btComm);
+      */
+
+      Wait(100);
+      i = (i+1)%16;
+    }
 }
 
 /** Initialize setpoint value.
@@ -75,6 +84,7 @@ unsigned int get_setpoint() {
     TextOut(0, LCD_LINE3, "setpoint:");
     NumOut(0, LCD_LINE4, retval);
 
+    Wait(1000);
     return retval;
 }
 
@@ -93,7 +103,7 @@ float pid(float &y1, float &y2, float &e2, float &I2) {
 
     float e1, u, P, I1, D;
 
-    e1 = setpoint - y1;
+    e1 = setpoint - y1 + forward_velocity;
     P = KP * e2;
     I1 = (KI * e1 * TS) + I2;
     D = (KD / TS) * (e1 - e2);

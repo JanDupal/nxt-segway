@@ -1,4 +1,4 @@
-NXC=/usr/bin/nbc
+NXC=nbc
 PROGRAM=segway
 OUTPUT=segway
 

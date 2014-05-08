@@ -5,27 +5,60 @@
 
 string last_payload = "";
 int n = 0;
+
+int received_forward_velicity = 0;
 int forward_velocity = 0;
+long valid_until = 0;
 
 bool bt_running = false;
 int bt_collision = 0;
 
-task btController() {
+unsigned long start_tick;
+bool bt_handshake = false;
+
+task btComm() {
+  if(bt_running) bt_collision++;
   bt_running = true;
   string payload;
+  int delimiter_pos;
+
   if(ReceiveRemoteString(FORWARD_MOTION_MAILBOX, true, payload) == NO_ERR) {
+    if (!bt_handshake) {
+      start_tick = CurrentTick();
+      bt_handshake = true;
+    }
     n++;
-    forward_velocity = atoi(payload);
+
+    if(delimiter_pos = Pos(" ", payload) != -1) {
+      received_forward_velicity = atoi(payload);
+      valid_until = start_tick + atol(RightStr(payload, StrLen(payload) - delimiter_pos - 2));
+    }
     last_payload = payload;
   }
   bt_running = false;
 }
 
+task btController() {
+  if(bt_handshake) {
+    if(CurrentTick() < valid_until) {
+      forward_velocity = received_forward_velicity;
+    } else {
+      forward_velocity = 0;
+    }
+  }
+}
+
 task btScheduler() {
+  int i = 0;
+
   while(true) {
-    if(bt_running) bt_collision++;
-    StartTask(btController);
+    if(i == 0)
+      StartTask(btComm);
+    else
+      StartTask(btController);
+
     Wait(BT_PERIOD_MS);
+    i = (i+1)%2;
   }
 }
 
@@ -39,6 +72,10 @@ task main() {
 
     ClearLine(LCD_LINE4);
     TextOut(0, LCD_LINE4, "V: " + NumToStr(forward_velocity));
+    ClearLine(LCD_LINE5);
+    TextOut(0, LCD_LINE5, "S: " + NumToStr(start_tick));
+    ClearLine(LCD_LINE6);
+    TextOut(0, LCD_LINE6, "T: " + NumToStr(valid_until));
 
     Wait(1000);
   }
