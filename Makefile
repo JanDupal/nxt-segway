@@ -4,7 +4,7 @@ OUTPUT=segway
 
 all: $(OUTPUT).rxe
 
-$(OUTPUT).rxe: *.nxc Makefile
+$(OUTPUT).rxe: *.nxc *.h Makefile
 	$(NXC) -O=$(OUTPUT).rxe $(PROGRAM).nxc
 
 down: $(OUTPUT).rxe
