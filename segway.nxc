@@ -10,10 +10,12 @@
 #define KI 0
 #define KD 0
 #define TS 0.005
+#define KK 5
 
 /** global variable holding setpoint value for controlled process */
 unsigned int setpoint = 0;
 
+/** Controller task that executes pid and feeds its output to motors */
 task controller() {
     float y1 = 0, y2 = 0, e2 = 0, I2 = 0;
     long t0;
@@ -25,9 +27,9 @@ task controller() {
         y1 = SENSOR_3;
         out = pid(y1, y2, e2, I2);
         NumOut(40, LCD_LINE1, out);
-        NumOut(40, LCD_LINE2, out * 5);
+        NumOut(40, LCD_LINE2, out * KK);
 
-        OnRev(OUT_BC, out * 5);
+        OnRev(OUT_BC, out * KK);
 
         Wait(TS * 1000);
     }
@@ -67,10 +69,12 @@ unsigned int get_setpoint() {
     vals /= 20;
     retval = vals;
 
+    /* beep three times to signal end of calibration*/
     repeat (3){
         PlayToneEx(TONE_C7, 100, VOL, FALSE);  Wait(200);
     }
 
+    /* show final setpoint value */
     ClearScreen();
     TextOut(0, LCD_LINE3, "setpoint:");
     NumOut(0, LCD_LINE4, retval);
