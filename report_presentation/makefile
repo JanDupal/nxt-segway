@@ -8,3 +8,4 @@ pdf:
 
 clean:
 	latexmk -C
+	rm -v *.bbl *.run.xml *-blx.bib
