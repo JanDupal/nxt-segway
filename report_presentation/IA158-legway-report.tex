@@ -13,7 +13,7 @@
 \usepackage[backend=bibtex,style=numeric,sorting=none]{biblatex}
 \usepackage{url}
 \usepackage{mathtools}
-
+\usepackage{hyperref}
 
 % Margins
 \topmargin=-0.45in
@@ -105,9 +105,9 @@ Standard form of PID controller look is
         \frac{de(t)}{dt} \right)
 \end{equation}
 
-\noindent where $e(t)$ is the error, the difference between required value and the output
-of the system and $u(t)$ is the controller output. Performing Laplace
-transformation on (\ref{eq:pid}) we get
+\noindent where $e(t)$ is the error, the difference between required value and
+the output of the system and $u(t)$ is the controller output. Performing Laplace
+transformation \cite{lt} on (\ref{eq:pid}) we get
 
 \begin{equation}
     G(s) = K \left( 1 + \frac{1}{sT_i} + sT_d \right)
@@ -115,11 +115,11 @@ transformation on (\ref{eq:pid}) we get
 
 \noindent or the parallel form
 
-\begin{equation} \label{eq:pid}
+\begin{equation} \label{eq:para}
     u(t) =  K_pe(t) + K_i \int_0^t e(\tau)d\tau + K_d
         \frac{de(t)}{dt}\end{equation}
 
-\noindent with its parallel form
+\noindent with its Laplace transform
 
 \begin{equation}
     G(s) = K_p + \frac{K_i}{s} + sK_d
@@ -131,10 +131,41 @@ integral time and the derivative time respectively.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=9cm]{pid}
+    \includegraphics[width=8cm]{pid}
     \caption{PID controller in controll loop \cite{pidpic}}
     \label{fig:pidpic}
 \end{figure}
+
+Since we need to use the controller in digital form we need to use discrete form
+of PID controller sometimes called PSD controller with S denoting sum instead of
+integral. This can be achieved with Z-transform of the equation (\ref{eq:para}).
+\cite{zt}
+
+\begin{equation}
+    U(z) = \left( K_p + \frac{K_i}{1-z^{-1}} + K_d\left(1-z^{-1}\right) \right)E(z)
+\end{equation}
+
+\begin{equation} \label{eq:zpid}
+    U(z) = \left( \frac{\left( K_p + K_i + K_d\right) + \left(
+    -K_p-2K_d\right)z_{-1} + K_dz^{-2}}{1-z^{-1}} \right)E(z)
+\end{equation}
+
+\noindent We have defined
+
+\begin{eqnarray*}
+    K_1 &=& K_p + K_i + K_d \\
+    K_2 &=& -K_p-2K_d \\
+    K_3 &=& K_d
+\end{eqnarray*}
+
+\noindent to be able to derive difference equation from (\ref{eq:zpid}).
+
+\begin{equation}
+    u[k] = u[k-1] + K_1e[k]+K_2e[k-1]+K_3e[k-2]
+\end{equation}
+
+In our final implementation of PSD controller we used slightly different
+equations that incorporate also the sampling rate parameter $T_s$.
 
 \section{Bluetooth}
 
