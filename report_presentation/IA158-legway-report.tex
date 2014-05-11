@@ -165,7 +165,15 @@ integral. This can be achieved with Z-transform of the equation (\ref{eq:para}).
 \end{equation}
 
 In our final implementation of PSD controller we used slightly different
-equations that incorporate also the sampling rate parameter $T_s$.
+equations that incorporate also the sampling rate parameter $T_s$. \cite{tar}
+
+There are several methods that could be used to determine the constants of PID
+controller for example Ziegler-Nichols method or Cohen-Coon method. However
+these methods need more information about controlled system than we had and they
+need ways to measure various parameters of the system. Hence we tried to set
+parameters experimentally assuming that in the state of equilibrium there is
+zero error, so we decided to set integal time to zero and change only
+proportional and derivative gain.
 
 \section{Bluetooth}
 
@@ -173,6 +181,15 @@ equations that incorporate also the sampling rate parameter $T_s$.
 
 \section{Conclusion}
 
+As was already mentioned in introduction our work was slowed down by two
+failures of Lego Mindstrorms brick. That is why our project is not completely
+finished. During testing of the controller we experienced that the sensor is
+sensitive to change of light conditions. The controlling mechanism alone worked
+but we suspect that the motors could not deliver enough power soon enough to
+balance the robot before it falls down. This problem could be probably fixed
+with better setting of PSD controller constants.
+
 \printbibliography
 
 \end{document}
+
