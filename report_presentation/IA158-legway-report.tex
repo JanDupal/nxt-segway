@@ -1,4 +1,4 @@
-% vim: set filetype=tex:ai:et:sw=4:ts=4:sts=4:
+% vim: set filetype=tex:ai:et:sw=4:ts=4:sts=4:tw=80
 %----------------------------------------------------------------------------------------
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
@@ -9,7 +9,8 @@
 \usepackage{fancyhdr} % Required for custom headers
 \usepackage{extramarks} % Required for headers and footers
 \usepackage{graphicx} % Required to insert images
-%\usepackage[backend=biber,style=numeric,sorting=none]{biblatex}
+\graphicspath{ {./pic/} }
+\usepackage[backend=bibtex,style=numeric,sorting=none]{biblatex}
 \usepackage{url}
 \usepackage{mathtools}
 
@@ -38,6 +39,8 @@
 \author{\textbf{Jan Dupal, Adrian Farmadin, Peter Kotvan, Vít Šesták}}
 \date{11. 5. 2014} % Insert date here if you want it to appear below your name
 
+\bibliography{./bib/bibliography.bib}
+
 %----------------------------------------------------------------------------------------
 
 \begin{document}
@@ -45,8 +48,36 @@
 \maketitle
 
 \section{Introduction}
+
+Our project is inspired by Segway, two-wheeled, self-balancing, battery-powered
+vehicle. \cite{segway} \cite{swiki} As the Lego robotic set did not contain
+gyroscopes we used light sensor for measuring the tilt of the robot as can be
+seen on figure~\ref{fig:legway}. The sensor is located under the Lego brick.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=7cm, angle=270]{legway}
+    \caption{Legway}
+    \label{fig:legway}
+\end{figure}
+
+The communication with Lego brick is done over bluetooth. Initially we intended
+to use ultrasonic sensor to avoid obstacles but later we decided to remove
+unnecessary parts to lower the centre of gravity to solve our problems with
+balancing.
+
+Unfortunately during our work on this project we experienced display failure on
+Lego brick two times. This caused delay in our work and the second malfunction
+prevented us from merging the codebases of team members and from enough
+experimentation with controller parameters as our team used the display for
+debugging purposes.
+
 \section{Controller}
+
 \section{Bluetooth}
+
 \section{Conclusion}
+
+\printbibliography
 
 \end{document}

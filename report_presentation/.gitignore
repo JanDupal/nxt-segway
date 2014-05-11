@@ -3,3 +3,7 @@
 *.fls
 *.log
 *.pdf
+*-blx.bib
+*.bbl
+*.run.xml
+*.blg
