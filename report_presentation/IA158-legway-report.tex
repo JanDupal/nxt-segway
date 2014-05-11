@@ -48,7 +48,7 @@
 \section{Introduction}
 
 Our project is inspired by Segway, two-wheeled, self-balancing, battery-powered
-vehicle. \cite{segway} \cite{swiki} As the Lego robotic set did not contain
+vehicle. \cite{segway} \cite{wseg} As the Lego robotic set did not contain
 gyroscopes we used light sensor for measuring the tilt of the robot as can be
 seen on figure~\ref{fig:legway}. The sensor is located under the Lego brick.
 
@@ -77,6 +77,64 @@ experimentation with controller parameters as our team used the display for
 debugging purposes.
 
 \section{Controller}
+
+Control theory is a branch of science that studies the behavior of dynamical
+systems and describes the ways of controlling them. To enable our robot to
+balance itself we had to implement basic PID controller with with feedback loop.
+Figure~\ref{fig:loop} shows basic closed-loop controll system.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=9cm]{loop}
+    \caption{Feedback loop \cite{wloop}}
+    \label{fig:loop}
+\end{figure}
+
+We have chosen discrete version of PID controller because of it's simplicity and
+easiness of implementation however this type of controller is meant to be used
+with identified linear systems and we know that our system is not linear and we
+have no means to identify it. We assumed that the robot will behave linearly
+close to point of equilibrium since the equations describing the system can
+linearized using Taylor series and terms with power of two and higher could be
+neglected.
+
+Standard form of PID controller look is
+
+\begin{equation} \label{eq:pid}
+    u(t) = K \left( e(t) + \frac{1}{T_i} \int_0^t e(\tau)d\tau + T_d
+        \frac{de(t)}{dt} \right)
+\end{equation}
+
+\noindent where $e(t)$ is the error, the difference between required value and the output
+of the system and $u(t)$ is the controller output. Performing Laplace
+transformation on (\ref{eq:pid}) we get
+
+\begin{equation}
+    G(s) = K \left( 1 + \frac{1}{sT_i} + sT_d \right)
+\end{equation}
+
+\noindent or the parallel form
+
+\begin{equation} \label{eq:pid}
+    u(t) =  K_pe(t) + K_i \int_0^t e(\tau)d\tau + K_d
+        \frac{de(t)}{dt}\end{equation}
+
+\noindent with its parallel form
+
+\begin{equation}
+    G(s) = K_p + \frac{K_i}{s} + sK_d
+\end{equation}
+
+\noindent where we can simple convert the constants $K_p = K$, $K_i =
+\frac{K}{T_i}$ and $K_d = KT_d$. These constants, sometimes denoted $P$, $I$, $D$ are the proportional gain,
+integral time and the derivative time respectively.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=9cm]{pid}
+    \caption{PID controller in controll loop \cite{pidpic}}
+    \label{fig:pidpic}
+\end{figure}
 
 \section{Bluetooth}
 
