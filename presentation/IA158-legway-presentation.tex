@@ -126,21 +126,58 @@ FI MUNI \\ % Your institution for the title page
 \section{Controller}
 
 \begin{frame}
-\frametitle{PID Feedback loop}
+\frametitle{PID - feedback loop}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=8cm]{pid}
-    \caption{PID controller in controll loop \cite{pid}}
+    \caption{PID controller in controll loop}
     \label{fig:pid}
 \end{figure}
 
+\end{frame}
+
+\begin{frame}
+\frametitle{PID - equations}
+
+\begin{itemize}
+    \item PID:
+        $$u(t) = K \left( e(t) + \frac{1}{T_i} \int_0^t e(\tau)d\tau + T_d
+        \frac{de(t)}{dt} \right)$$
+    \item Parallel version of PID equation:
+        $$u(t) =  K_pe(t) + K_i \int_0^t e(\tau)d\tau + K_d \frac{de(t)}{dt}$$
+    \pause \item Constants:
+    \begin{itemize}
+        \item $K_p$ - proportional gain
+        \item $K_i$ - integral gain
+        \item $K_d$ - derivative gain
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{PID - discrete form}
+
+\begin{itemize}
+    \item Laplace form:
+        $$G(s) = K_p + \frac{K_i}{s} + sK_d$$
+    \pause \item Difference form:
+        $$u[k] = u[k-1] + K_1e[k]+K_2e[k-1]+K_3e[k-2]$$
+
+    \item Constants:
+        \begin{eqnarray*}
+            K_1 &=& K_p + K_i + K_d \\
+            K_2 &=& -K_p-2K_d \\
+            K_3 &=& K_d
+        \end{eqnarray*}
+
+\end{itemize}
 
 \end{frame}
 
 
 \begin{frame}
-    \frametitle{Thank You}
     \Huge{\centerline{Thank you for your attention.}}
 \end{frame}
 
