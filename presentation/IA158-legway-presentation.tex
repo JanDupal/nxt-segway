@@ -176,6 +176,57 @@ FI MUNI \\ % Your institution for the title page
 
 \end{frame}
 
+\section{Remote control}
+\frame{
+	\frametitle{Remote control}
+	\begin{itemize}
+		\item User can just control speed
+		\item Application for Android written in Scala
+		\item Communication via Bluetooth
+			\begin{itemize}
+				\item on top of NXT-specific protocol
+			\end{itemize}
+		\item Realtime protocol design
+	\end{itemize}
+}
+
+\frame{
+	\frametitle{Security and safety challenges}
+	\begin{itemize}
+		\item Spoofed commands
+		\item Delays
+			\begin{itemize}
+				\item Natural
+				\item Caused by an adversary
+			\end{itemize}
+		\item Lost connection
+	\end{itemize}
+}
+
+\frame{
+	\frametitle{Security and safety solutions}
+	\begin{itemize}
+		\item Authorization hopefully solved on the RFCOMM layer
+		\item Delays and lost connection: \texttt{validUntil}
+		\item Remaining challenge: time sync
+	\end{itemize}
+}
+
+\frame{
+	\frametitle{Syncing the time}
+	\begin{itemize}
+		\item No time dilation assumption
+		\item No global time
+		\item Syncing approaches:
+			\begin{enumerate}[a]
+				\item Negligible delays assumption
+				\item Confirmation of message delivery
+				\item Confirmation of processed message (ideal)
+			\end{enumerate}
+
+	\end{itemize}
+}
+
 
 \begin{frame}
     \Huge{\centerline{Thank you for your attention.}}
