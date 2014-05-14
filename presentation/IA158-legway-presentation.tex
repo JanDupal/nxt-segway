@@ -84,6 +84,10 @@
 \usepackage{url}
 \usepackage[backend=bibtex,style=numeric,sorting=none]{biblatex}
 
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,fit,calc,positioning}
+
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
@@ -226,6 +230,71 @@ FI MUNI \\ % Your institution for the title page
 
 	\end{itemize}
 }
+
+\section{Scheduling}
+
+\begin{frame}
+  \frametitle{Timing requirements of tasks}
+    
+  \begin{description}
+    \item[PID] period 5 to 10 ms
+    \item[BT] roundtrip $\geq 100$ ms, thus 50 ms for mailbox checking
+    \item[CMD] depends on BT, 50 ms
+    \item[DBG] period 1 s enough (optional)
+  \end{description}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Scheduling}
+  
+  \begin{figure}[h]
+    \centering
+
+    \begin{tikzpicture}[xscale=0.7,yscale=0.7,transform shape]
+      
+      \draw [-latex](-0.5,0) coordinate(dd)-- (0,0) coordinate (O1) -- (11,0)coordinate(ff) node[above]{$t$};
+      \draw [dashed,thick] (O1) -- (0,1) coordinate(t3) -- (0,3) coordinate(t2) -- (0,5) coordinate(t1) -- ++(0,1)coordinate(ff2);
+      
+      \foreach \nn\name in{1/PID,2/BT,3/CMD}{
+        \draw [thick] (dd|-t\nn) node[above]{$t_{\name}$}-- (t\nn-|ff);
+      }
+      
+      \foreach \xx in{1,2,...,10}{
+        \draw[dashed] (\xx,0) -- (\xx,0|- ff2);
+      }
+      
+      \foreach \xx in{0,2,4,...,10}{
+        \draw[dashed] (\xx,0.2) -- (\xx,-0.2) node[below]{\xx 0};
+      }
+    
+      
+      \begin{scope}[shift={(t1)}]
+        \node[ above right=0.4cm and 0cm of t1,right,draw, minimum width=0.5cm,minimum height=0.8cm,fill=white](t1n0) {};
+        
+        \foreach \nn in{1,2,...,9}{
+            \pgfmathsetmacro\pp{\nn - 1}
+            \node[right=0.487cm of t1n\pp,right,draw, minimum width=0.5cm,minimum height=0.8cm,fill=white](t1n\nn) {};
+        } 
+      \end{scope}
+          
+      \begin{scope}[shift={(t2)}]
+        \node[ above right=0.4cm and 0cm of t2,right,draw, minimum width=0.5cm,minimum height=0.8cm,fill=white](t2n0) {};
+        \node[right=4.5cm of t2n0,right,draw, minimum width=0.5cm,minimum height=0.8cm,fill=white](t2n1) {};
+      \end{scope}
+          
+      \begin{scope}[shift={(t3)}]
+        \node[ above right=0.4cm and 3cm of t3,right,draw, minimum width=0.5cm,minimum height=0.8cm,fill=white](t3n0) {};
+        \node[right=4.5cm of t3n0,right,draw, minimum width=0.5cm,minimum height=0.8cm,fill=white](t3n1) {};
+      \end{scope}
+    
+    
+    \end{tikzpicture}
+    
+    \caption{Scheduling diagram}
+    \label{fig:scheduling}
+  \end{figure}
+\end{frame}
 
 
 \begin{frame}
